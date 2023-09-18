@@ -11,9 +11,12 @@ use Laravel\Sanctum\HasApiTokens;
 
 class TicTacToe extends Model
 {
+    protected $table = "tic_tac_toe";
+
     use HasFactory;
 
     protected $fillable = [
+        'name',
         'device_token',
         'game_state'
     ];

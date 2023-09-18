@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('tic_tac_toe', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->string('device_token');
             $table->json('game_state');
             $table->timestamps();
