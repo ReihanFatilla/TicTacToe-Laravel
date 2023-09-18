@@ -15,6 +15,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/tictactoe', [TicTacToeController::class, 'index']);
 Route::group(['middleware' => 'check.device.token'], function () {
+    Route::get('/tictactoe', [TicTacToeController::class, 'index']);
 });

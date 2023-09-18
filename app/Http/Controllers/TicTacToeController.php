@@ -9,7 +9,6 @@ class TicTacToeController extends Controller
 {
     public function index(Request $request)
     {
-
         $deviceToken = $request->header('Device-Token');
 
         $ticTacToe = TicTacToe::where('device_token', $deviceToken)->get();

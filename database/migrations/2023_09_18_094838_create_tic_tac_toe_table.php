@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('device_token');
+            $table->enum('type', ['finished', 'ongoing'])->default('ongoing');
             $table->json('game_state');
             $table->timestamps();
         });
