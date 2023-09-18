@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TicTacToeDeleteRequest;
 use App\Http\Requests\TicTacToeRequest;
 use App\Http\Requests\TicTacToeUpdateRequest;
 use App\Models\TicTacToe;
@@ -37,7 +38,7 @@ class TicTacToeController extends Controller
         
         $validated = $request->validated();
 
-        $ticTacToe = TicTacToe::find($request->id);
+        $ticTacToe = TicTacToe::find($validated['id']);
 
         $ticTacToe->name = $validated['name'];
         $ticTacToe->type = $validated['type'];
@@ -47,4 +48,19 @@ class TicTacToeController extends Controller
         return response()->json(['message' => $ticTacToe->name.' Updated'], 201);
     }
     
+    public function delete(TicTacToeDeleteRequest $request)
+    {
+
+        $validated = $request->validated();
+
+        $ticTacToe = TicTacToe::find($validated['id']);
+
+        if(!$ticTacToe){
+            return response()->json(['message' => 'TicTacToe with ID '.$validated['id']." is not found!"], 201);
+        }
+
+        $ticTacToe->delete();
+        
+        return response()->json(['message' => $ticTacToe->name.' Deleted'], 201);
+    }
 }
