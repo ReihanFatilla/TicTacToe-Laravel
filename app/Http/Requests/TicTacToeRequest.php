@@ -31,7 +31,7 @@ class TicTacToeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|max:32',
+            'name' => 'nullable|string|max:32',
             'type' => 'required',
             'game_state' => 'required|array',
             'game_state.*.*' => 'nullable|string',
@@ -42,6 +42,7 @@ class TicTacToeRequest extends FormRequest
     {
         return [
             'type.required' => 'Type is required!',
+            'type.nullable' => 'Name Cannot be Null!',
             'game_state.required' => 'Game State is required!',
         ];
     }
