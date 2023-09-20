@@ -31,16 +31,16 @@ class TicTacToeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:28',
+            'name' => 'string|max:32',
             'type' => 'required',
-            'game_state' => 'required',
+            'game_state' => 'required|array',
+            'game_state.*.*' => 'nullable|string',
         ];
     }
 
     public function messages()
     {
         return [
-            'name.required' => 'Name is required!',
             'type.required' => 'Type is required!',
             'game_state.required' => 'Game State is required!',
         ];

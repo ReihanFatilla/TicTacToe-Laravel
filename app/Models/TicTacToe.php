@@ -20,4 +20,8 @@ class TicTacToe extends Model
         'device_token',
         'game_state'
     ];
+
+    protected $casts = [
+        'game_state' => 'json',
+    ];
 }

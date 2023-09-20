@@ -32,7 +32,7 @@ class TicTacToeUpdateRequest extends FormRequest
     {
         return [
             'id' => 'required|int|max:28',
-            'name' => 'required|string|max:28',
+            'name' => 'string|max:28',
             'type' => 'required',
             'game_state' => 'required',
         ];
@@ -42,7 +42,6 @@ class TicTacToeUpdateRequest extends FormRequest
     {
         return [
             'id.required' => 'ID is required!',
-            'name.required' => 'Name is required!',
             'type.required' => 'Type is required!',
             'game_state.required' => 'Game State is required!',
         ];
