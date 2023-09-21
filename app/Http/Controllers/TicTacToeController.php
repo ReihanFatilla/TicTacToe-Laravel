@@ -7,82 +7,48 @@ use App\Http\Requests\TicTacToeRequest;
 use App\Http\Requests\TicTacToeUpdateRequest;
 use App\Http\Resources\TicTacToeCollection;
 use App\Models\TicTacToe;
+use App\Services\TicTacToeService;
 use Illuminate\Http\Request;
-
-use function PHPUnit\Framework\isNull;
 
 class TicTacToeController extends Controller
 {
-    public function index(Request $request)
-    {
+    public function index(
+        Request $request,
+        TicTacToeService $ticTacToeService
+    ) {
         $deviceToken = $request->header('Device-Token');
 
-        $ticTacToe = TicTacToe::where('device_token', $deviceToken)
-        ->orderBy('updated_at', 'desc')
-        ->get(["id", "name", "type", "game_state"]);
+        $result = $ticTacToeService->index($deviceToken);
 
-        return response()->json(TicTacToeCollection::collection($ticTacToe), 200);
+        return response()->json(TicTacToeCollection::collection($result),200);
     }
 
-    public function store(TicTacToeRequest $request)
-    {
+    public function store(TicTacToeRequest $request,TicTacToeService $ticTacToeService) {
+
         $validated = $request->validated();
-        $timestamp = time();
+        $deviceToken = $request->header('Device-Token');
 
-        $ticTacToe = new TicTacToe();
-        $ticTacToe->device_token = $request->header('Device-Token');
-        if (isset($request['name']) && !empty($request['name'])) {
-            $ticTacToe->name = $request['name'];
-        } else {
-            $date = date("j F Y", $timestamp);
-            $time = date("H:i:s", $timestamp);
-            $ticTacToe->name = "Saved Game On $date | $time";
-        }
-        $ticTacToe->type = $validated['type'];
-        $ticTacToe->game_state = json_encode($validated['game_state']);
+        $message = $ticTacToeService->store($deviceToken, $validated);
 
-        $ticTacToe->save();
-
-        return response()->json(['message' => $ticTacToe->name . ' created'], 200);
+        return response()->json(['message' => $message], 200);
     }
 
-    public function update($id, TicTacToeUpdateRequest $request)
-    {
-        $validated = $request->validated();
-        $timestamp = time();
-        $ticTacToe = TicTacToe::find($id);
-        if (!$ticTacToe) {
-            return response()->json(['message' => 'TicTacToe with ID ' . $validated['id'] . " is not found!"], 201);
-        } else if($ticTacToe->device_token != $request->header('Device-Token')){
-            return response()->json(['message' => 'You cannot modify Game that isn\'t Yours!'], 201);
-        } else if (isset($request['name']) && !empty($request['name'])) {
-            $ticTacToe->name = $request['name'];
-        } else {
-            $date = date("j F Y", $timestamp);
-            $time = date("H:i:s", $timestamp);
-            $ticTacToe->name = "Saved Game On $date | $time";
-        }
-        $ticTacToe->type = $validated['type'];
-        $ticTacToe->game_state = json_encode($validated['game_state']);
-        $ticTacToe->save();
+    public function update($id,TicTacToeUpdateRequest $request,TicTacToeService $ticTacToeService) {
 
-        return response()->json(['message' => $ticTacToe->name . ' Updated'], 200);
+        $validated = $request->validated();
+        $deviceToken = $request->header('Device-Token');
+
+        $message = $ticTacToeService->update($deviceToken, $validated, $id);
+
+        return response()->json(['message' => $message], 200);
     }
 
-    public function delete($id, TicTacToeDeleteRequest $request)
-    {
+    public function delete($id,Request $request,TicTacToeService $ticTacToeService) {
 
-        $validated = $request->validated();
+        $deviceToken = $request->header('Device-Token');
 
-        $ticTacToe = TicTacToe::find($validated['id']);
-        if (!$ticTacToe) {
-            return response()->json(['message' => 'TicTacToe with ID ' . $validated['id'] . " is not found!"], 201);
-        } else if($ticTacToe->device_token != $request->header('Device-Token')){
-            return response()->json(['message' => 'You cannot Delete Game that isn\'t Yours!'], 201);
-        }
+        $message = $ticTacToeService->delete($deviceToken, $id);
 
-        $ticTacToe->delete();
-
-        return response()->json(['message' => $ticTacToe->name . ' Deleted'], 200);
+        return response()->json(['message' => $message], 200);
     }
 }

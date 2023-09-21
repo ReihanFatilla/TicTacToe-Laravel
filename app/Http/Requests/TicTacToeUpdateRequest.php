@@ -31,7 +31,6 @@ class TicTacToeUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|int',
             'name' => 'nullable|string|max:32',
             'type' => 'required',
             'game_state' => 'required',
@@ -41,7 +40,6 @@ class TicTacToeUpdateRequest extends FormRequest
     public function messages()
     {
         return [
-            'id.required' => 'ID is required!',
             'type.required' => 'Type is required!',
             'game_state.required' => 'Game State is required!',
         ];
