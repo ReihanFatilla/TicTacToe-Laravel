@@ -46,13 +46,16 @@ class TicTacToeController extends Controller
         return response()->json(['message' => $ticTacToe->name . ' created'], 200);
     }
 
-    public function update(TicTacToeUpdateRequest $request)
+    public function update($id, TicTacToeUpdateRequest $request)
     {
-
         $validated = $request->validated();
         $timestamp = time();
-        $ticTacToe = TicTacToe::find($validated['id']);
-        if (isset($request['name']) && !empty($request['name'])) {
+        $ticTacToe = TicTacToe::find($id);
+        if (!$ticTacToe) {
+            return response()->json(['message' => 'TicTacToe with ID ' . $validated['id'] . " is not found!"], 201);
+        } else if($ticTacToe->device_token != $request->header('Device-Token')){
+            return response()->json(['message' => 'You cannot modify Game that isn\'t Yours!'], 201);
+        } else if (isset($request['name']) && !empty($request['name'])) {
             $ticTacToe->name = $request['name'];
         } else {
             $date = date("j F Y", $timestamp);
@@ -66,19 +69,20 @@ class TicTacToeController extends Controller
         return response()->json(['message' => $ticTacToe->name . ' Updated'], 200);
     }
 
-    public function delete(TicTacToeDeleteRequest $request)
+    public function delete($id, TicTacToeDeleteRequest $request)
     {
 
         $validated = $request->validated();
 
         $ticTacToe = TicTacToe::find($validated['id']);
-
         if (!$ticTacToe) {
             return response()->json(['message' => 'TicTacToe with ID ' . $validated['id'] . " is not found!"], 201);
+        } else if($ticTacToe->device_token != $request->header('Device-Token')){
+            return response()->json(['message' => 'You cannot Delete Game that isn\'t Yours!'], 201);
         }
 
         $ticTacToe->delete();
 
-        return response()->json(['message' => $ticTacToe->name . ' Deleted'], 201);
+        return response()->json(['message' => $ticTacToe->name . ' Deleted'], 200);
     }
 }

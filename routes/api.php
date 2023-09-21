@@ -18,6 +18,6 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => 'check.device.token'], function () {
     Route::get('/tictactoe', [TicTacToeController::class, 'index']);
     Route::post('/tictactoe', [TicTacToeController::class, 'store']);
-    Route::patch('/tictactoe', [TicTacToeController::class, 'update']);
-    Route::delete('/tictactoe', [TicTacToeController::class, 'delete']);
+    Route::patch('/tictactoe/{id}', [TicTacToeController::class, 'update']);
+    Route::delete('/tictactoe/{id}', [TicTacToeController::class, 'delete']);
 });
